@@ -1,0 +1,527 @@
+11.11  
+
+1. install ros（melodic）
+
+一、配置Ubuntu软件库
+打开软件和更新，勾选：
+配置Ubuntu存储库以允许"main", “restricted” ，“universe，” and “multiverse”
+
+二、安装过程
+	1）设置软件源
+	避免后面会出现无法定位软件包的错误，这里ROS提供了国内的安装源，添加国内安装源命令
+	sudo sh -c '. /etc/lsb-release && echo "deb http://mirrors.ustc.edu.cn/ros/ubuntu/ $DISTRIB_CODENAME main" > /etc/apt/sources.list.d/ros-latest.list'
+	
+	2）设置密钥
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+	
+	3）更新Ubuntu 18.04 LTS的最新可用软件包列表
+	sudo apt update
+		
+	注：如果出现如下错误
+	W: GPG 错误：http://mirrors.ustc.edu.cn/ros/ubuntu bionic InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY F42ED6FBAB17C654
+	E: 仓库 “http://mirrors.ustc.edu.cn/ros/ubuntu bionic InRelease” 没有数字签名。
+	N: 无法安全地用该源进行更新，所以默认禁用该源。
+	N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。
+
+	解决办法，执行如下命令：
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F42ED6FBAB17C654
+	
+	4）开始安装ROS Melodic
+	sudo apt-get install ros-melodic-desktop-full
+
+	注：
+	如果出现如下问题
+	E: 无法获得锁 /var/lib/dpkg/lock-frontend - open (11: 资源暂时不可用)
+	E: 无法获取 dpkg 前端锁 (/var/lib/dpkg/lock-frontend)，是否有其他进程正占用它？
+	
+	解决办法，执行如下命令，删除 /var/lib/dpkg/lock-frontend - open
+	ls /var/lib/dpkg/lock-frontend
+	sudo rm -r -f /var/lib/dpkg/lock-frontend
+	sudo  rm  -r -f /var/lib/dpkg/lock
+
+	再执行sudo apt-get install ros-melodic-desktop-full命令
+	
+	避免后面出现sudo rosdep：找不到命令提示，这里需要执行如下命令
+
+	sudo apt install python-rosdep
+	
+	5）初始化rosdep
+	开始使用ROS之前，先初始化rosdep，rosdep能够轻松地安装要编译的源代码的系统依赖关系，rosdep是ROS核心组件运行的基础	
+	sudo rosdep init
+	
+	6）执行rosdep update更新
+	rosdep update
+	
+	7）添加ros环境变量
+	echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+	source ~/.bashrc
+
+	8）为了构建和管理开发者自己的ROS工作空间，还需安装rosinstall
+	sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
+
+	第一次启动ROS时，需要进行环境变量配置，执行如下命令
+	echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+	source ~/.bashrc
+
+三、测试（小乌龟样例）
+	
+	1）第一个终端运行如下命令
+	roscore
+	
+	2）打开第二个终端，也可以利用 Ctrl+Shift+T 快捷键打开一个新的终端，运行如下命令，这时你会看见一只静止的小海龟
+	rosrun turtlesim turtlesim_node
+	
+	3）如果希望小海龟能够移动，打开第三个终端，利用Ctrl+Shift+T快捷键再打开一个新的终端，启动turtlesim的键盘控制节点turtle_teleop_key，运行如下命令
+	rosrun turtlesim turtle_teleop_key
+
+参考：
+http://t.csdn.cn/cGL7D
+
+rosdep update
+
+(tried many many times!!!  finally changed the WiFi,worked.)
+
+---------------------------------------------------------------------
+
+11.12  
+
+2. install realsense driver
+
+一、使用命令行安装
+
+	1）注册服务器的公钥：
+	sudo apt-key adv --keyserver keys.gnupg.net --recv-key C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C8B3A55A6F3EFCDE
+
+	2）将服务器添加到存储库列表中：
+	sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
+	
+	3）安装库：
+	sudo apt-get install librealsense2-dkms
+	sudo apt-get install librealsense2-utils
+
+	注：我在这步出现问题，最后通过源码安装
+	
+	4）安装开发者和调试包：
+	sudo apt-get install librealsense2-dev
+	sudo apt-get install librealsense2-dbg
+
+	5）测试SDK2
+	realsense-viewer
+
+二、使用源码安装
+	
+	1）手动下载地址：
+	git clone https://github.com/IntelRealSense/librealsense
+	cd librealsense
+
+	2）安装依赖项：
+	sudo apt-get install libudev-dev pkg-config libgtk-3-dev
+	sudo apt-get install libusb-1.0-0-dev pkg-config
+	sudo apt-get install libglfw3-dev
+	sudo apt-get install libssl-dev
+
+	3）安装权限脚本：
+	sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
+	sudo udevadm control --reload-rules && udevadm trigger
+	
+	4）编译安装：
+	mkdir build
+	cd build
+	cmake ../ -DBUILD_EXAMPLES=true
+	make
+	sudo make install 
+	
+	5）测试：
+	进入librealsense/build/examples/capture，测试效果：
+	./rs-capture 
+	
+	6）或直接使用realsense-viewer工具查看效果：
+	realsense-viewer
+	
+三、Realsense ROS 安装
+	
+
+参考：
+1、http://t.csdn.cn/PX3wq
+
+(refered selectively)
+2、https://huaweicloud.csdn.net/63563b74d3efff3090b5b873.html?spm=1001.2101.3001.6650.18&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-18-125334427-blog-121086344.pc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-18-125334427-blog-121086344.pc_relevant_recovery_v2&utm_relevant_index=21
+
+
+3. install mavros
+
+参考：
+http://t.csdn.cn/gDM2q
+
+修改mavros的launch文件：
+
+roscd mavros
+
+suo gedit launch/px4.launch
+
+修改“ACMO”为自己飞控对应的串口（一般不需要修改）
+修改冒号后的数字为921600（默认为57600）
+
+4. 安装ceres和 glog
+	
+一、安装glog
+	git clone https://github.com/google/glog
+	sudo apt-get install autoconf automake libtool
+	cd glog
+	mkdir build
+	cd build
+	cmake ..
+	make -j 24
+	sudo make install
+	
+	注：
+	执行“cmake ..”报错
+	CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
+	CMake 3.16 or higher is required.  You are running version 3.10.2
+
+	-- Configuring incomplete, errors occurred!
+	
+	解决办法：升级cmake
+	
+	cmake升级过程：
+	
+	1）查看当前版本
+	cmake --version
+	
+	2）下载更高版本cmake，可在cmake官网下载，我下载的是cmake-3.24.3-linux-aarch64
+	cmake官网：https://cmake.org/download/
+	（注：再此步骤之前，还有一步卸载cmake，由于我安装了ros，提示会卸载许多与ros相关的cmake文件，可能会导致ros无法使用，所以跳过卸载的过程直接下载更好版本cmake。）
+	
+	3）安装cmake
+
+	将cmake-3.24.3-linux-aarch64解压并提取出来
+	
+	由于安装了ros跳过了第二步，所以先找到cmake路径，将原来版本的cmake执行文件删除
+	which cmake
+	cd /usr/bin/
+	sudo rm cmake
+	
+	注意：
+	cmake-3.24.3-linux-aarch64压缩包里的文件是已经编译过的，解压就可以用！
+
+	4）建立软链接
+	sudo ln -s /home/lzj/cmake-3.24.3-linux-aarch64/bin/cmake /usr/bin/cmake
+	软链接建立成功，就可以使用cmake了
+	
+参考：1、http://t.csdn.cn/ZKcZm
+	2、http://t.csdn.cn/MgW62
+	
+	**升级完cmake之后，golg成功安装，具体步骤见上
+参考：http://t.csdn.cn/GM40e
+	
+二、安装ceres
+	
+	1）Getting the source code
+	You can start with the latest stable release . Or if you want the latest version, you can clone the git repository
+	git clone https://ceres-solver.googlesource.com/ceres-solver
+
+	2）Dependencies
+	CMake 3.10 or later required.
+	Eigen 3.3 or later required.
+	glog 0.3.5 or later. Recommended
+
+	
+	3）Start by installing all the dependencies.
+	# CMake
+	sudo apt-get install cmake
+	# google-glog + gflags
+	sudo apt-get install libgoogle-glog-dev libgflags-dev
+	# Use ATLAS for BLAS & LAPACK
+	sudo apt-get install libatlas-base-dev
+	# Eigen3
+	sudo apt-get install libeigen3-dev
+	# SuiteSparse (optional)
+	sudo apt-get install libsuitesparse-dev
+	
+	4）We are now ready to build, test, and install Ceres.
+	tar zxf ceres-solver-2.1.0.tar.gz
+	mkdir ceres-bin
+	cd ceres-bin
+	cmake ../ceres-solver-2.1.0
+	make -j3
+	make test
+	# Optionally install Ceres, it can also be exported using CMake which
+	# allows Ceres to be used without requiring installation, see the documentation
+	# for the EXPORT_BUILD_DIR option for more information.
+	make install
+	
+	**注：中间make test会报错（暂时没管）：
+	99% tests passed, 2 tests failed out of 183
+
+	Total Test time (real) = 612.62 sec
+
+	The following tests FAILED:
+		  1 - cuda_memcheck_dense_qr_test (Failed)
+		  2 - cuda_memcheck_dense_cholesky_test (Failed)
+	Errors while running CTest
+	Output from these tests are in: /home/lzj/ceres-solver-2.1.0/ceres-bin/Testing/Temporary/LastTest.log
+	Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.
+	Makefile:70: recipe for target 'test' failed
+	make: *** [test] Error 8
+	lzj@lzj-desktop:~/ceres-so
+	
+	**注2：最后一步make install 前面要加上sudo，不然会报错，好在系统会有提示：
+	CMake Error at cmake_install.cmake:46 (file):
+	  file cannot create directory: /usr/local/include/ceres.  Maybe need
+	  administrative privileges.
+	
+
+5. 安装terminator
+
+sudo apt install terminator
+
+
+6. 安装plotjuggler（时序分析软件，分析实验中的bug）
+
+sudo apt-get install ros-melodic-plotjuggler
+
+sudo apt-get install ros-melodic-plotjuggler-ros
+
+启动：rosrun plotjuggler plotjuggler
+
+7. 安装net-tools查看ip（貌似之前装过了）
+
+sudo apt install net-tools 
+
+查看ip：
+ifconfig
+
+	wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+		inet 192.168.31.6  netmask 255.255.255.0  broadcast 192.168.31.255
+		inet6 fe80::5629:23e2:834f:74cd  prefixlen 64  scopeid 0x20<link>
+		ether 48:b0:2d:0f:5e:e1  txqueuelen 1000  (Ethernet)
+		RX packets 201536  bytes 274455544 (274.4 MB)
+		RX errors 0  dropped 0  overruns 0  frame 0
+		TX packets 65312  bytes 10470477 (10.4 MB)
+		TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+8. 安装nomachine
+
+参考：
+http://t.csdn.cn/Ohw4Z
+
+直接搜官网 
+https://downloads.nomachine.com/
+
+切换到对应下载到的文件夹：
+sudo dpkg -i nomachinexxxxx
+
+dpkg: error processing archive nomachine_8.2.3_4_amd64.deb (--install):
+ package architecture (amd64) does not match system (arm64)
+Errors were encountered while processing:
+ nomachine_8.2.3_4_amd64.deb
+报错：应该是需要选择arm架构
+
+(
+注：
+查看cpu信息
+http://t.csdn.cn/tXkVa
+)
+
+nomachine官网往下拉，找到NoMachine for ARM
+选择：NoMachine for ARMv8
+重复上面的操作即可
+
+9. 安装ssh（暂未）
+
+home空间剩余8.2GB...
+
+----------------------------------------------
+
+11.13
+
+1、机载计算机和飞控的连线使用micro-USB线，micro端连接飞控侧面的端口，USB连接记载计算机；
+
+2、使用命令：
+ls /dev/tty* 
+可以查看所有端口，其中：
+/dev/ttyACM0
+就是飞控的端口
+
+3、给飞控端口附加权限:
+sudo chmod 777 /dev/ttyACM0
+
+4、启动飞控：
+roslaunch mavros px4.launch
+
+5、查看一下话题:
+rostoptic list
+
+找到"/mavros/imu/data_raw"话题
+
+6、hz一下：
+rostopic hz /mavros/imu/data_raw
+
+显示如下（平均50hz，视频中设置为200hz）：
+average rate: 50.003
+	min: 0.014s max: 0.025s std dev: 0.00176s window: 198
+average rate: 49.985
+	min: 0.014s max: 0.025s std dev: 0.00173s window: 248
+average rate: 49.989
+	min: 0.014s max: 0.025s std dev: 0.00164s window: 298
+average rate: 49.989
+	min: 0.014s max: 0.025s std dev: 0.00165s window: 348
+average rate: 49.982
+
+7、启动相机的驱动：
+roslaunch realsense2_camera rs_camera.launch
+
+8、进入nomachine远端桌面 ，打开：
+rqt_image_view
+
+9、安装ego-planner：
+
+sudo apt-get install libarmadillo-dev
+git clone https://github.com/ZJU-FAST-Lab/ego-planner.git
+cd ego-planner
+catkin_make
+source devel/setup.bash
+roslaunch ego_planner simple_run.launch
+
+注：执行到“catkin_make”报错，应该是没有安装eigen和cares等;
+	
+安装完ceres和glog之后，重新运行catkin_make，又报错：
+	CMake Error at /opt/ros/melodic/share/cv_bridge/cmake/cv_bridgeConfig.cmake:114 (message):
+	  Project 'cv_bridge' specifies '/usr/include/opencv' as an include dir,
+	  which is not found.  It does neither exist as an absolute directory nor in
+	  '${{prefix}}//usr/include/opencv'.  Check the issue tracker
+	  'https://github.com/ros-perception/vision_opencv/issues' and consider
+	  creating a ticket if the problem has not been reported yet.
+	Call Stack (most recent call first):
+	  /opt/ros/melodic/share/catkin/cmake/catkinConfig.cmake:76 (find_package)
+	  planner/plan_env/CMakeLists.txt:12 (find_package)
+
+暂时还没找到解决办法...
+
+
+
+10、配置激光雷达（rplidar s1 ）
+
+一、创建工作空间：
+	mkdir -p ~/catkin_ws/src
+	cd ~/catkin_ws/
+	#如果使用python2直接catkin_make
+	#catkin_make
+	#python3用户
+	#这将会配置 catkin_make 使用 Python 3.你可以在随后的构建中只使用 catkin_make。
+	catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3
+
+参考：
+http://t.csdn.cn/a6skf
+
+二、安装配置rplidar-s1
+
+在工作空间的src下面下载官网ROS包
+git clone https://github.com/Slamtec/rplidar_ros.git
+
+#在~/catkin_ws目录下编译
+catkin_make
+
+检查rplidar的串行端口的权限：
+ls -l / dev | grep ttyUSB
+
+添加写权限：（例如/ dev / ttyUSB0）
+sudo chmod 666 / dev / ttyUSB0
+
+启动一个rplidar节点并在rviz中查看扫描结果。
+#记得启动之前启动roscore
+source devel/setup.bash
+roslaunch rplidar_ros view_rplidar_s1.launch
+
+参考：
+http://t.csdn.cn/qiE5i
+
+---------------------------------------------------------------
+
+11.14 
+
+*一、解决昨天未完成的ego-planner配置问题
+
+	cd /usr/include/
+	sudo ln -s opencv4/ opencv (replace "4" with your version)
+
+	Had the same issue, the above fixed my compiler needs.
+	Be ware of compatibility with yours, you may need to delete the link afterwards to not break other cmake runs that use/expect other versions of opencv.
+
+	"Problem" is the static / hardcoded libraries in cv_bridge cmake file.
+
+	根据ego-planner项目的github对应的issue上的提问以及解答，运行前两条指令后再进行编译指令：
+	catkin_make -DCMAKE_BUILD_TYPE=Release
+	不再报错：
+	[100%] Linking CXX executable /home/lzj/ego-planner/devel/lib/ego_planner/traj_server
+	[100%] Built target traj_server
+	[100%] Linking CXX executable /home/lzj/ego-planner/devel/lib/ego_planner/ego_planner_node
+	[100%] Built target ego_planner_node
+
+
+参考：1、https://github.com/ros-perception/vision_opencv/issues/389
+	2、http://t.csdn.cn/5XTXG
+	
+
+二、ego-planner仿真演示
+	
+	1）仿真过程需要先进入对应的文件，然后运行：
+	source devel/setup.bash
+	roslaunch ego_planner rviz.launch
+	
+	2）对于单机器人可以运行
+	
+	roslaunch ego_planner run_in_sim.launch
+	
+	仿真完成
+
+三、实机运行ego-planner
+	
+	1）设置遥控器辅助通道：
+		
+		通道5：SwA
+		通道6：SwB
+		通道7：SwC
+		通道8：SwD
+		通道9：VrA
+		通道10：VrB
+	2）下载QGC
+	
+-	
+	
+	 
+
+	
+	
+	
+
+
+
+	
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

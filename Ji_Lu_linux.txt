@@ -1,0 +1,61 @@
+11.14 
+
+一、安装QGC
+
+	1、官网有详细的教程
+	
+	    Before installing QGroundControl for the first time:
+
+	    1、On the command prompt enter:
+
+		    sudo usermod -a -G dialout $USER
+		    sudo apt-get remove modemmanager -y
+		    sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
+		    sudo apt install libqt5gui5 -y
+		    sudo apt install libfuse2 -y
+
+	    2、Logout and login again to enable the change to user permissions.
+
+	    To install QGroundControl:
+
+	    1）Download QGroundControl.AppImage.
+	    2）Install (and run) using the terminal commands:
+
+		    chmod +x ./QGroundControl.AppImage
+		    ./QGroundControl.AppImage  (or double click)
+
+	*注：按照官网的教程走下来之后出现报错：
+	error while loading shared libraries: libSDL2-2.0.so.0: cannot open shared object file: No such file or directory
+
+	解决办法：安装依赖项
+	sudo apt-get install espeak libespeak-dev libudev-dev libsdl2-dev
+	
+
+
+	2、取出飞控SD卡，往里推一下，用读卡器将频率调成200Hz（默认50Hz）：未完成，没有SD卡读卡器。。。
+
+	3、重新安装固件
+
+	进入深蓝学院官网下载压缩包，解压后有1.11固件，选择自定义固件，选择解压后固件的地址，选择固件后系统自动烧录
+
+
+	4、配置无人机和遥控器
+	
+		接受机对码：说明书描写不充分
+
+		没有完成对码！无法对遥控器进行校正，甚至连之前的左右相反的方向都没了，惨。。。
+
+	目前存在问题，而且问题不少！！！
+
+	注：Ubuntu 修改用户密码方法详解
+	
+	$ passwd xcs
+	修改后的密码要比原本的密码更加复杂，因此我没有修改！！
+
+	5、根据之前记载的笔记安装ros，这里不再记录
+	附带参考链接：http://t.csdn.cn/uu7pu
+	
+	
+	
+	
+	
