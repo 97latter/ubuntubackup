@@ -279,8 +279,25 @@ http://rsks.hrss.tj.gov.cn/ks/index.do?method=select
 	roscore
 	rosrun rqt_plot rqt_plot
 
+五、git push origin master 失败
 
+	原因：
+	Git仓库中已经有一部分代码，所以它不允许你直接把你的代码覆盖上去。
+	远程仓库和本地仓库存在差异。
+	一般都是因为你在码云创建的仓库有ReadMe文件，而本地没有，造成本地和远程的不同步，
+	解决方法：
+
+	解决方法：同步
 	
+	1、git pull origin master --allow-unrelated-histories //把远程仓库和本地同步，消除差异
+	2、重新add和commit相应文件
+	3、git push origin master
+	4、此时就能够上传成功了
+
+参考链接：https://www.cnblogs.com/qingheshiguang/p/14777557.html
+
+
+
 	
 
 	
