@@ -110,6 +110,184 @@
 	ssh lzj@lzj_tx2  连接记载计算机的终端
 
 	
+------------------------------------------------------------------------------------------
+11.16
+
+
+一、安装VINS，调试无人机起飞，仿真模拟；
+
+
+二、安装PX4，搭建仿真环境
+	
+	1、PX4源码下载（这里下载的是v1.12.3版本的PX4）
+	git clone -b v1.12.3 https://github.com/PX4/PX4-Autopilot.git --recursive
+
+	2、安装依赖
+	bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
+	
+	3、编译
+	cd PX4-Autopilot
+	make px4_sitl_default gazebo
+
+	4、设置环境变量
+	（1）运行gedit ~/.bashrc 打开.bashrc文件
+	gedit ~/.bashrc
+	
+	（2）把下面代码粘贴复制到该文件的最后面
+	source ~/PX4-Autopilot/Tools/setup_gazebo.bash ~/PX4-Autopilot/ ~/PX4-Autopilot/build/px4_sitl_default
+	export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4-Autopilot
+	export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4-Autopilot/Tools/sitl_gazebo
+
+	（3）完成之后记得 source ~/.bashrc 一下
+	source ~/.bashrc
+	
+	5、运行launch文件
+	cd ~/ PX4-Autopilot
+	roslaunch px4 mavros_posix_sitl.launch
+	
+	6、检查与mavros连接是否正常
+	rostopic echo /mavros/state
+
+
+-------------------------------------------------------------------------------------
+11.17
+
+
+一、强化学习路线
+	
+入门思路：
+（1）认识各种强化学习词汇，了解强化学习各种算法发展买了，建立整体框架概念；
+	
+（2）学习基本的理论，最好中文，便于理解透彻；
+
+（3）上手写代码，做出视觉demo，形成对强化学习算法的直观感受；
+
+（4）系统学习基础理论
+
+参考：强化学习怎么入门好？ - 花半楼的回答 - 知乎
+https://www.zhihu.com/question/277325426/answer/816094591
+
+
+二、PX4继续仿真
+
+1、报错
+
+	CMake Error at CMakeLists.txt:34 (find_program):
+  Could not find px4 using the following names:
+	-- Configuring incomplete, errors occurred!
+	See also "/home/xcs/PX4_Firmware/build/px4_sitl_default/build_gazebo/CMakeFiles/CMakeOutput.log".
+	See also "/home/xcs/PX4_Firmware/build/px4_sitl_default/build_gazebo/CMakeFiles/CMakeError.log".
+	[135/740] Building CXX object msg/CMakeFiles/uorb_msgs.dir/topics_sources/position_controller_landing_status.cpp.o
+	FAILED: external/Stamp/sitl_gazebo/sitl_gazebo-configure /home/xcs/PX4_Firmware/build/px4_sitl_default/external/Stamp/sitl_gazebo/sitl_gazebo-configure 
+	cd /home/xcs/PX4_Firmware/build/px4_sitl_default/build_gazebo && /home/xcs/cmake-3.24.3-linux-x86_64/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DSEND_VISION_ESTIMATION_DATA=ON -GNinja /home/xcs/PX4_Firmware/Tools/sitl_gazebo && /home/xcs/cmake-3.24.3-linux-x86_64/bin/cmake -E touch /home/xcs/PX4_Firmware/build/px4_sitl_default/external/Stamp/sitl_gazebo/sitl_gazebo-configure
+	[145/740] Building CXX object msg/CMakeFiles/uorb_msgs.dir/topics_sources/orb_test_large.cpp.o
+	ninja: build stopped: subcommand failed.
+	Makefile:198: recipe for target 'px4_sitl_default' failed
+	make: *** [px4_sitl_default] Error 1
+
+
+解决办法：重装gazebo9-----(无效)
+
+
+
+	
+
+参考链接：
+https://classic.gazebosim.org/tutorials?tut=install_ubuntu&cat=install
+
+
+			
+2、运行gazebo报错：
+gazebo: symbol lookup error: /usr/lib/x86_64-linux-gnu/libgazebo_common.so.9: undefined symbol: _ZN8ignition10fuel_tools12ClientConfig12SetUserAgentERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE
+
+
+解决办法：
+
+运行一下：sudo apt-get upgrade
+
+
+------------------------------------------------------------------------------------------------------------
+
+11.21
+
+一、天津市公务员报名考试：
+http://rsks.hrss.tj.gov.cn/ks/index.do?method=select
+
+二、解决之之前“make px4_sitl_Default gazebo”报错的问题：
+
+	重装cmake，这次安装的是cmake-3.17.2-Linux-x86_64,安装过程与之前安装cmake相同：
+	
+	1）查看当前版本
+	cmake --version
+	
+	2）在cmake官网下载，我下载的是cmake-3.17.2-Linux-x86_64
+	cmake官网：https://cmake.org/download/
+	（注：再此步骤之前，还有一步卸载cmake，由于我安装了ros，提示会卸载许多与ros相关的cmake文件，可能会导致ros无法使用，所以跳过卸载的过程直接下载更好版本cmake。）
+	
+	3）安装cmake
+
+	将cmake-3.17.2-Linux-x86_64解压并提取出来
+	
+	由于安装了ros跳过了第二步，所以先找到cmake路径，将原来版本的cmake执行文件删除
+	which cmake
+	cd /usr/bin/
+	sudo rm cmake
+		
+	注意：
+	01. cmake-3.17.2-Linux-x86_64压缩包里的文件是已经编译过的，解压就可以用！
+	02. cmake各个版本解压文件下载地址：https://cmake.org/files/
+
+
+	4）建立软链接
+	sudo ln -s /home/xcs/cmake-3.17.2-Linux-x86_64/bin/cmake /usr/bin/cmake
+
+参考链接：https://github.com/robin-shaun/XTDrone/issues/18
+
+
+三、PX4仿真报错
+
+	1、运行‘roslaunch px4 mavros_posix_sitl.launch’后出现：
+	RLException: [mavros_posix_sitl.launch] is neither a launch file in package [px4] nor is [px4] a launch file name
+	The traceback for the exception was written to the log file
+	
+	解决办法：
+	在终端输入
+	source ~/PX4_Firmware/Tools/setup_gazebo.bash ~/PX4_Firmware/ ~/PX4_Firmware/build/px4_sitl_default
+	export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4_Firmware
+	export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4_Firmware/Tools/sitl_gazebo
+	
+	重新执行‘roslaunch px4 mavros_posix_sitl.launch’指令
+
+参考链接
+
+	2、重新运行上述指令后又出现新的报错：
+	Resource not found: gazebo_ros
+	ROS path [0]=/opt/ros/melodic/share/ros
+	ROS path [1]=/opt/ros/melodic/share
+	ROS path [2]=/home/xcs/PX4_Firmware
+	ROS path [3]=/home/xcs/PX4_Firmware/Tools/sitl_gazebo
+	The traceback for the exception was written to the log file
+
+	解决办法：
+	根据报错的提示，缺少gazebo_ros  ，直接安装缺失的gazebo：
+	sudo apt-get install ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control
+
+参考链接：http://t.csdn.cn/LyJ4z
+	
+四、查看ros tf tree
+	
+	roscore
+	rosrun rqt_plot rqt_plot
+
+
+	
+	
+
+	
+
+
+
+	
 
 	
 
