@@ -504,6 +504,13 @@ http://rsks.hrss.tj.gov.cn/ks/index.do?method=select
 	#rosrun+功能包+功能包内节点文件
 
 	 至此，第一次简单的无人机飞行仿真结束。
+	 
+	 服务器IP：192.168.31.163
+	 
+	 
+	 
+	 
+	
 
 
 	
