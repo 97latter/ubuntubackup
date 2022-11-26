@@ -606,6 +606,13 @@ windows:
 		
 		总之，在无法增加论文深度情况下，尽量加大有意义的工作量。
 
+
+三、Ubuntu系统PDF阅读器  okular
+
+	1、安装：sudo apt-get install okular
+
+	2、注释：F6
+
 		
 		
 		
