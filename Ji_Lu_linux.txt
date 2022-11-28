@@ -614,6 +614,56 @@ windows:
 	2、注释：F6
 
 
+------------------------------------------------------------------------------------------------------
+
+11.28
+
+一、还是catkin_ws编译ego-planner问题
+
+	修改编译方式：使用catkin_make编译,出现报错：
+	[ 88%] Linking CXX shared library /home/xcs/catkin_ws/devel/lib/libgazebo_ros_bumper.so
+	In file included from /home/xcs/catkin_ws/src/ego_planner/Utils/rviz_plugins/src/multi_probmap_display.cpp:53:0:
+	/home/xcs/catkin_ws/src/ego_planner/Utils/rviz_plugins/src/multi_probmap_display.h:40:10: fatal error: multi_map_server/MultiOccupancyGrid.h: No such file or directory
+	 #include <multi_map_server/MultiOccupancyGrid.h>
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	解决方法：
+	链接：https://pan.baidu.com/s/1gw6ytOEUZeEbxhkOwsnL_g
+	提取码：jm8s
+	把这四个文件放在/devel/include/multi_map_server/下
+	或放在/src/uav_simulator/Utils/multi_map_server/include/multi_map_server/下
+
+参考链接：http://t.csdn.cn/plY0L
+
+二、编译VINS-Fusion报错
+
+	CMake Error at VINS-Fusion/camera_models/CMakeLists.txt:19 (find_package):
+	  By not providing "FindCeres.cmake" in CMAKE_MODULE_PATH this project has
+	  asked CMake to find a package configuration file provided by "Ceres", but
+	  CMake did not find one.
+
+	  Could not find a package configuration file provided by "Ceres" with any of
+	  the following names:
+
+	    CeresConfig.cmake
+	    ceres-config.cmake
+	
+	原因：缺少crers包
+
+	解决方法：安装ceres包
+
+	sudo apt install libceres-dev
+
+参考：http://t.csdn.cn/jkkuQ
+	
+
+
+
+	
+
+
+
+
+
 		
 		
 		
