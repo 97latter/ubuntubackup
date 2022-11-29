@@ -655,7 +655,208 @@ windows:
 
 参考：http://t.csdn.cn/jkkuQ
 	
+	
 
+------------------------------------------------------
+
+11.29
+
+一、实现自建障碍物控制空间，gazebo
+
+	命名为model2.gazebo
+
+	替换掉原来的launch文件中的gazebo
+
+二、已经完成避障实验仿真，前期准备具体过程如下
+
+	1、首先建好自己的障碍物实验场景，命名为my_model3.world.
+	
+	2、修改indoor1.launch文件夹中world的名字为上面提到的my_model3.world,并且将my_model3.world文件移动到PX4_Firmware/Tools/sitl_gazebo/worlds路径下；
+	
+	3、修改～/catkin_ws/src/ego_planner/plan_manage/launch/sigle_uav.launch中的目的地，将原来的左臂地址注释：
+
+				<!-- 原目的地，已注释
+				<arg name="target_x" value="0"/>
+				<arg name="target_y" value="-20"/>
+				<arg name="target_z" value="1.0"/>
+
+				替换为：
+
+				        <arg name="target_x" value="5.2"/>
+					<arg name="target_y" value="-13"/>
+					<arg name="target_z" value="1.0"/>
+
+	4、在~/catkin_ws/src/ego_planner/plan_manage/launch/run_in_xtdrone.launch中，可以选择多个waypoint：
+
+	
+		    <arg name="point_num" value="1" />
+
+		    <arg name="point0_x" value="$(arg target_x)" />
+		    <arg name="point0_y" value="$(arg target_y)" />
+		    <arg name="point0_z" value="$(arg target_z)" />
+
+		    <arg name="point1_x" value="6.0" />
+		    <arg name="point1_y" value="0.0" />
+		    <arg name="point1_z" value="1.5" />
+
+		    <arg name="point2_x" value="8.0" />
+		    <arg name="point2_y" value="-8.0" />
+		    <arg name="point2_z" value="1.5" />
+
+		    <arg name="point3_x" value="0.0" />
+		    <arg name="point3_y" value="-15.0" />
+		    <arg name="point3_z" value="1.0" />
+
+		    <arg name="point4_x" value="-15.0" />
+		    <arg name="point4_y" value="0.0" />
+		    <arg name="point4_z" value="1.0" />
+
+
+	5通过修改飞行类型，可以选择1，从而通过RVIZ中的2DNav Goal来设置目的地。
+
+		    <!-- 1: use 2D Nav Goal to select goal  -->
+		    <!-- 2: use global waypoints below  -->
+		    <arg name="flight_type" value="2" />
+
+
+三、ego-planner具体仿真过程如下：
+
+	1、首先编译ego_planner:
+		
+		cp -r  ~/XTDrone/motion_planning/3d/ego_planner ~/catkin_ws/src/
+		cd ~/catkin_ws/
+		catkin_make #或catkin build ego_planner
+
+	2、启动仿真：
+		ego_planner需要输入深度图+相机位姿或是点云，深度图来源与realsense_camrea，
+		（记得把indoot1.launch的iris_stereo_camera换成iris_realsense_camera）,相机位姿由VINS-Fusion计算得到。
+		
+	**下面是VINS-Fusion仿真过程：
+	使用双目+IMU
+
+	3、VINS-Fusion编译：
+
+		cp -r ~/XTDrone/sensing/slam/vio/VINS-Fusion ~/catkin_ws/src/
+		mkdir ~/catkin_ws/scripts/
+		cp ~/XTDrone/sensing/slam/vio/xtdrone_run_vio.sh ~/catkin_ws/scripts/
+		cd ~/catkin_ws
+		catkin_make #或catkin build，取决于您的编译工具
+
+	4、VINS-Fusion仿真：
+
+		注意把EKF设置为视觉定位，设置过程如下：
+
+			注：PX4默认使用的EKF配置为融合GPS的水平位置与气压计高度。如果我们想使用视觉定位，就需要把修改配置文件。
+			● 注意，此修改意味着EKF融合来自mavros/vision_pose/pose的数据，并不是修改完无人机就可以视觉定位了，
+			需要相关程序提供mavros/vision_pose/pose的数据，相关程序包括视觉SLAM、激光SLAM和获取Gazebo真值等。
+			如果没有额外的视觉数据，想要飞行必须改回基于GPS和气压计的定位。
+
+			1）输入以下命令，打开对应文件：
+			gedit ~/PX4_Firmware/ROMFS/px4fmu_common/init.d-posix/rcS
+
+			2）在原文件中对应位置，将语句改为如下所示：
+				# GPS used
+				#param set EKF2_AID_MASK 1
+				# Vision used and GPS denied
+				param set EKF2_AID_MASK 24
+
+				# Barometer used for hight measurement
+				#param set EKF2_HGT_MODE 0
+				# Barometer denied and vision used for hight measurement
+				param set EKF2_HGT_MODE 3
+
+			3）重启仿真前，需要删除上一次记录在虚拟eeprom中的参数文件，否则仿真程序会读取该参数文件，导致本次rcS的修改不能生效：
+			rm ~/.ros/eeprom/parameters*
+			rm -rf ~/.ros/sitl*
+
+	5、启动仿真程序，注意laucnh文件中使用iris_stereo_camera.sdf:
+		roslaunch px4 indoor1.launch
+
+
+	6、启动VINS-Fusion，注意其订阅的话题是iris_0de ,如果要环岛别的vehicle，需要对应修改。另外临时文件存储路径也要对应修改。
+		输入：gedit ~/catkin_ws/src/VINS-Fusion/config/xtdrone_sitl/px4_sitl_stereo_imu_config.yaml
+
+		对应需要修改的语句如下：
+		
+		imu_topic: "/iris_0/imu_gazebo"
+		image0_topic: "/iris_0/stereo_camera/left/image_raw"
+		image1_topic: "/iris_0/stereo_camera/right/image_raw"
+		output_path: "/home/robin/catkin_ws/vins_output"
+		.
+		.
+		.
+		pose_graph_save_path: "/home/robin/catkin_ws/vins_output/pose_graph/"  # save and load path
+
+	然后输入：
+		cd ~/catkin_ws
+		bash scripts/xtdrone_run_vio.sh
+
+	VINS-Fusion就启动了
+
+	7、由于VINS-Fusion发布的是Odometry类型的话题，因此需要将其对应转为PX4所需要的话题
+		cd ~/XTDrone/sensing/slam/vio
+		python vins_transfer.py iris 0
+			
+	8、这是PX4仿真终端出现如下所示输出，代表视觉信息融合成功
+
+		INFO  [ecl/EKF] 1213644000: reset position to ev position
+		INFO  [ecl/EKF] 1213644000: commencing external vision position fusion
+		INFO  [ecl/EKF] 1213644000: commencing external vision yaw fusion
+			
+	9、然后建立通讯：
+		cd ~/XTDrone/communication
+		python multirotor_communication.py iris 0
+
+
+	10、键盘控制无人机起飞即可：
+		cd ~/XTDrone/control/keyboard
+		python multirotor_keyboard_control.py iris 1 vel
+
+	**至此，电脑上的VINS-Fusion仿真完成，以下还有一步在无人机上实现的VIO初始化，暂时没有实现：
+		VINS-Fusion的双目+IMU可以在静止条件下完成初始化，因此不用额外考虑。
+		但单目+IMU以及ORBSLAM3的单目/双目+IMU均需要在运动中初始化，在实物系统中，我们可以用手晃一晃飞机实现初始化，
+		而仿真中必须起飞才能让无人机运动，但PX4的offboard模式如果没有定位数据，又无法起飞，这就造成了矛盾。
+		因此仿真里只能用Gazebo真值给PX4定位，然后在飞行过程中初始化VIO，VIO的输出只用于测试精度，并不实际给无人机定位用。
+	
+	11、在完成上述的VINS-Fusion启动仿真之后，将无人机起飞悬停，关闭键盘控制
+
+	12、转换相机位姿的坐标系方向：
+		cd ~/XTDrone/motion_planning/3d
+		python ego_transfer.py iris 0
+
+	13、启动rviz：
+		cd ~/XTDrone/motion_planning/3d
+		rviz -d ego_rviz.rviz
+	14、启动ego_planner：
+		roslaunch ego_planner single_uav.launch 
+
+	注意：目的地的修改以及waypoint的选择均可以修改，上面的前夕准备已经介绍，不再赘述。
+	至此，避障仿真实验完成。
+
+	
+			
+	
+	
+
+参考：
+
+1、https://www.yuque.com/xtdrone/manual_cn/building_editor
+
+2、https://www.yuque.com/xtdrone/manual_cn/3d_motion_planning
+
+3、https://www.yuque.com/xtdrone/manual_cn/3d_motion_planning
+
+4、https://www.yuque.com/xtdrone/manual_cn/vio#luwyy
+
+5、https://www.yuque.com/xtdrone/manual_cn/ekf_settings
+
+6、https://gitee.com/robin_shaun/XTDrone/tree/master/sensing/slam/vio/VINS-Fusion
+
+7、https://www.yuque.com/xtdrone/manual_cn/basic_config
+
+
+
+	
 
 
 	
