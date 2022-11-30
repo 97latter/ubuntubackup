@@ -879,13 +879,62 @@ windows:
 
 参考：http://t.csdn.cn/ATMcl
 
+
+-------------------------------------------------------------------
+
+11.30
+
+今天争取完成环境中添加移动的人或者车，以及稠密点云仿真
+
+晚上在windows再试试校准电调
+参考：http://t.csdn.cn/HFFlc	
+
+
+
+添加路灯：lamp post
+
+添加人：actor
+
+一、Actor行人插件配置
+
+	1、安装插件：
 	
+	cp -r ~/XTDrone/sitl_config/gazebo_plugin/gazebo_ros_actor_plugin ~/catkin_ws/src/
+	cd ~/catkin_ws
+	catkin_make #或catkin build
 
-
-
-
+	2、启动robocup.launch，此时会看到world中有6个actor禁止不动
 	
+	roslaunch px4 robocup.launch
 
+	3、通过修改actor的init_pose标签，可以更改actor的初始位置。
+	可以通过脚本动态调节actor的位置
+
+	cd ~/XTDrone/control/actor
+	bash control_actors.sh
+
+
+二、VINS-Fusion+RTABMap的三维稠密重建
+
+	之前教程介绍的双目SLAM和VIO获得的都是稀疏点云，无法运用于避障与运动规划。
+
+	(仿真效果一般，经常卡死...)
+
+三、安装飞行日志分析软件PlotJuggler（时序分析软件，分析实验中的bug）
+
+	sudo apt-get install ros-melodic-plotjuggler
+
+	sudo apt-get install ros-melodic-plotjuggler-ros
+
+	启动：rosrun plotjuggler plotjuggler
+
+四、ulg格式文件转换为csv格式文件：
+
+	1、直接安装pyulog包
+	pip install pyulog
+
+	2、在log005.ulg文件目录下运行：
+	ulog2csv log005.ulg 
 
 	
 
