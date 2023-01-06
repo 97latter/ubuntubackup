@@ -1071,8 +1071,34 @@ int main()
 
 参考：http://t.csdn.cn/yLPlt
 
-		
-		
+
+----------------------------------------------------------------------------
+
+12.16
+
+目标：使用激光雷达实现ego-planner
+
+
+
+1、启动roslaunch的indoor1.launch时出现报错：
+
+	[gazebo-2] process has died [pid 22088, exit code 255, cmd /opt/ros/melodic/lib/gazebo_ros/gzserver -e ode /home/xcs/PX4_Firmware/Tools/sitl_gazebo/worlds/my_world4.world __name:=gazebo __log:=/home/xcs/.ros/log/80db1420-7d08-11ed-bb47-645d865b3457/gazebo-2.log].
+	log file: /home/xcs/.ros/log/80db1420-7d08-11ed-bb47-645d865b3457/gazebo-2*.log
+
+	解决办法：使用Ctrl+C结束当前运行，然后输入
+
+		killall gzserver
+
+		再次roslaunch，问题解决。
+
+
+2、无人机键盘控制indoor1.launch起飞报错：
+
+	[ERROR] [1671172924.254336491, 1216.593000000]: FCU: Preflight Fail: Position estimate error
+	
+		更换到indoor3后不报错
+
+
 		
 
 		
