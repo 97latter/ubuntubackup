@@ -1099,6 +1099,53 @@ int main()
 		更换到indoor3后不报错
 
 
+--------------------------------------------------------------------------------------------------------------
+
+2023.1.6
+
+
+一、下载eigen3.4.0
+
+	1、下载地址：http://eigen.tuxfamily.org/index.php?title=Main_Page
+
+	2、cd eigen-3.3.4
+	mkdir build
+	cd build
+	cmake ..
+	make
+	sudo make install
+
+2023.1.12
+
+二、安装livox
+
+	参考：http://t.csdn.cn/RbfBQl
+
+
+2.20
+
+
+一、启动ego-planner自己搭建的室外避障环境时报错：
+
+	[ERROR] [1632398141.557684, 290.045000]: Spawn service failed. Exiting.
+
+	解决办法：source ~/catkin_ws/devel/setup.bash
+		1
+		再次执行launch文件
+
+		还有问题改下仿真world文件中的仿真时间
+
+		<sim_time>478 56330000</sim_time>
+		1
+		改为 0
+		<sim_time>0</sim_time>
+
+参考：http://t.csdn.cn/MfunW
+
+
+
+
+
 		
 
 		
