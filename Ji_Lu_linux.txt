@@ -1143,6 +1143,272 @@ int main()
 参考：http://t.csdn.cn/MfunW
 
 
+2/26
+
+一、编译运行R3LIVE
+
+	1、安装livox驱动
+	方式一：
+	livox-SDK的地址：https://github.com/Livox-SDK/Livox-SDK
+	
+	方式二：
+	git clone https://github.com/Livox-SDK/Livox-SDK.git
+	cd Livox-SDK
+	cd build && cmake ..
+	make
+	sudo make install
+	
+	建议在编译安装完成后进行简答的测试，以确定是否成功安装。
+	在build文件夹下，进入sample/lidar或者进入sample/hub文件夹下，运行相应程序进行测试。
+	
+	命令如下：
+	cd sample/lidar
+	./lidar_sample
+	或者：
+	cd sample/hub
+	./hub_sample
+	
+	2、下载编译lovix的ros驱动程序
+	（当编译R3live程序时，你会发现，编译是不会通过，并且明确告诉你缺少livox的ros驱动程序，所以，只能安装！）
+	  
+	  github地址如下：https://github.com/Livox-SDK/livox_ros_driver.git
+	  
+	   也可以采用官方说明中的终端命令行git clone的方式：
+
+	  git clone https://github.com/Livox-SDK/livox_ros_driver.git ws_livox/src
+	  
+	 注意：这里是默认创建了ws_livox/src的文件夹，编译安装要在ws_livox文件夹下，
+	 当然，也可以改下后面的命令（指“ws_livox/src”）将代码放在自己的文件夹下以便管理。
+
+	 然后就是在ws_livox文件夹（要是自己放在不同的文件夹下记得更改终端下的当前路径信息）下编译：
+	 cd ws_livox
+	 catkin_make
+
+	 最后是刷新当前ROS包的环境：
+	 source ./devel/setup.sh
+	 
+	3、CGAL和pcl_viewer安装
+	 
+	官方说明中是一行命令就可以解决了：
+	sudo apt-get install libcgal-dev pcl-tools
+	 
+	4、opencv安装（我安装的是opencv3.4.1）
+	
+	(1)查看opencv版本：
+	pkg-config opencv --modversion
+	
+	(2)准备opencv3.4.1安装包：
+	https://github.com/opencv/opencv/archive/3.4.1.zip
+	安装并解压，进入opencv 3.4.文件夹内
+	cd opencv-3.4.1
+	
+	(3)依赖库和cmake安装
+	
+	在依赖库和cmake的安装之前，先进入管理员权限以此获得更多的权限：
+	sudo -s
+	
+	接下来我们进行cmake的安装：
+	sudo apt-get install cmake  
+	
+	依赖库安装:
+	sudo apt-get install build-essential libgtk2.0-dev libavcodec-dev libavformat-dev libjpeg.dev libtiff5.dev libswscale-dev libjasper-dev  
+
+	(4)opencv编译：
+	先创建一个编译文件夹并且进入文件夹内：
+	mkdir my_build_dir
+	
+	依次输入命令：
+	cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
+	make -j4
+	sudo make install
+
+	(4)配置opencv库以及配置bash
+	sudo gedit /etc/ld.so.conf.d/opencv.conf 
+	在末尾添加/usr/local/lib   
+	保存
+	
+	再输入：sudo ldconfig
+	opencv库配置完成
+	
+	(5)接下来配置bash：
+	 输入命令：
+	 sudo gedit /etc/bash.bashrc  
+	同样，在文件末尾添加
+	PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+	export PKG_CONFIG_PATH
+	点击保存之后关闭
+	
+	 再输入命令：
+	 source /etc/bash.bashrc  
+	bash配置完成
+	
+	最后再进行一次更新即可
+	输入命令：
+	sudo updatedb  
+
+	(6)opencv的使用--图片特效
+	
+		1）创建test.cpp文件
+		在文件夹opencv-3.4.1下创建并进入mytest文件夹,
+		在mytest文件夹下创建一个test.cpp文件并写入代码，
+		输入命令：
+		mkdir mytest
+		即可创建mytest文件夹
+		
+		输入命令：
+		cd mytest
+		
+		touch test.cpp
+		即可进入文件夹并创建文件test.cpp
+		
+		vim(gedit) test.cpp
+		即可打开test.cpp文件编辑
+		按I开始在光标处插入
+		
+		输入代码（注：原博客有误，删去最后一个"}"）：
+		#include <opencv2/highgui.hpp>
+		#include <opencv2/opencv.hpp>
+		using namespace cv;
+		using namespace std;
+		int main(int argc, char** argv)
+		{
+			CvPoint center;
+			double scale = -3; 
+
+			IplImage* image = cvLoadImage("test1.jpg");
+			argc == 2? cvLoadImage(argv[1]) : 0;
+
+			cvShowImage("Image", image);
+
+
+			if (!image) return -1; 	center = cvPoint(image->width / 2, image->height / 2);
+			for (int i = 0;i<image->height;i++)
+				for (int j = 0;j<image->width;j++) {
+					double dx = (double)(j - center.x) / center.x;
+					double dy = (double)(i - center.y) / center.y;
+					double weight = exp((dx*dx + dy*dy)*scale);
+					uchar* ptr = &CV_IMAGE_ELEM(image, uchar, i, j * 3);
+					ptr[0] = cvRound(ptr[0] * weight);
+					ptr[1] = cvRound(ptr[1] * weight);
+					ptr[2] = cvRound(ptr[2] * weight);
+				}
+
+			Mat src;Mat dst;
+			src = cvarrToMat(image);
+			cv::imwrite("test.png", src);
+
+			cvNamedWindow("test",1);  	imshow("test", src);
+			 cvWaitKey();
+			 return 0;
+		}
+		
+		按ESC回到命令模式
+		输入:wq退出vim编辑器并保存
+		
+		2)编译文件：
+		g++ test.cpp -o test `pkg-config --cflags --libs opencv`
+		即可成功编译
+		编译语句中-o前后就是将待编译文件名和输出文件名
+		而``中包括的就是支持包
+		pkg-config:其中pkg-config给出了opencv的头文件和库的所有信息
+		我们在安装opencv的时候就会给/usr/lib/目录下，放一个opencv.pc
+		我们刚在配置opencv库的时候就放到/usr/local/lib（其中/usr/lib是系统级的,/usr/local/lib是用户级的）这也是为了在使用opencv的时候让系统知道在哪里
+		而我们刚才在配置bash的时候用PKG_CONFIG_PATH环境变量所指向的路径下的所有*.pc文件，这就是为什么pkg-config有opencv的头文件和库的所有信息。
+		cflags： 指定头文件（.h文件）的路径，如：CFLAGS=-I/usr/include -I/path/include。同样地，安装一个包时会在安装路径下建立一个include目录，当安装过程中出现问题时，试着把以前安装的包的include目录加入到该变量中来。
+		所有用opencv的其他程序，在编译时，只需要写pkg-config --cflags --libs opencv,而不需要自己去找opencv的头文件在哪里，要链接的库在哪里。
+
+		3）运行结果：
+		在运行之前我们需要给文件夹里放一张名为test1.jpg的图片
+		在运行时程序需要调用
+		输入命令：
+		./test
+		成功运行结果
+		
+		(：如何改变文件（文件夹类型）比如从root类型改为普通类型，常用方法如下：
+		常用方法如下：
+
+		sudo chmod 600 ××× (只有所有者有读和写的权限)
+
+		sudo chmod 644 ××× (所有者有读和写的权限，组用户只有读的权限)
+
+		sudo chmod 700 ××× (只有所有者有读和写以及执行的权限)
+
+		sudo chmod 666 ××× (每个人都有读和写的权限)
+
+		sudo chmod 777 ××× (每个人都有读和写以及执行的权限
+		其中×××指文件名(也可以是文件夹名，不过要在chmod后加-ld)。
+
+		解释一下，其实整个命令的形式是
+
+		sudo chmod -(代表类型)×××(所有者)×××(组用户)×××(其他用户)
+
+		三位数的每一位都表示一个用户类型的权限设置。取值是0～7，即二进制的[000]~[111]。
+
+		这个三位的二进制数的每一位分别表示读、写、执行权限。
+
+		如000表示三项权限均无，而100表示只读。这样，我们就有了下面的对应：
+
+		0 [000] 无任何权限
+
+		4 [100] 只读权限
+
+		6 [110] 读写权限
+
+		7 [111] 读写执行权限
+
+		现在看上面的几个常用用法就非常清楚了。试着自己来修改权限吧
+
+		最后同时附上查询文件(或文件夹)权限的命令
+
+		ls -l 文件名称 (文件夹将-l改为-ld)。
+		参考：https://blog.csdn.net/weixin_39825872/article/details/116602256?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167741282616800213034497%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=167741282616800213034497&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-1-116602256-null-null.blog_rank_default&utm_term=%E6%94%B9%E5%8F%98%E6%96%87%E4%BB%B6%E5%A4%B9root%E6%9D%83%E9%99%90&spm=1018.2226.3001.4450
+		)
+		)
+		
+		4)opencv的使用——显示视频
+		与上面相同创建一个test1.cpp文件，源码如下(test1.cpp)
+		
+		编译：
+		g++ test1.cpp -o test1 `pkg-config --cflags --libs opencv`
+		
+		运行：./test1
+		
+		5)总结：
+		通过以上对opencv的系列操作，
+		我们使用opencv来给照片加特效，读取本地视频文件，以及打开摄像头显示视频帧等操作，
+		了解到了opencv的强大之处。当然如果你感兴趣的话可以再去探索一些，实现更多的操作。
+		
+		参考链接：https://blog.csdn.net/qq_45999753/article/details/109316118?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740504716782425661744%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=167740504716782425661744&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-7-109316118-null-null.142^v73^insert_down4,201^v4^add_ask,239^v2^insert_chatgpt&utm_term=opencv3.4.1%E5%AE%89%E8%A3%85&spm=1018.2226.3001.4187
+		
+		
+	5、R3LIVE编译：
+	cd ~/catkin_ws/src
+	git clone https://github.com/hku-mars/r3live.git
+	cd ../
+	catkin_make
+	source ~/catkin_ws/devel/setup.bash
+		
+注意：安装过程太慢，考虑有没有别的办法。。。
+	
+	参考链接1：https://blog.csdn.net/smartfoolish/article/details/122407063?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740211216782429751089%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=167740211216782429751089&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~top_positive~default-1-122407063-null-null.blog_rank_default&utm_term=R3LIVE&spm=1018.2226.3001.4450
+	参考链接2：https://blog.csdn.net/handily_1/article/details/122271243?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740211216782429751089%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=167740211216782429751089&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~top_click~default-3-122271243-null-null.blog_rank_default&utm_term=R3LIVE&spm=1018.2226.3001.4450
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 
 
 
