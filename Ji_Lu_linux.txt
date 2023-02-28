@@ -1393,10 +1393,48 @@ int main()
 	参考链接1：https://blog.csdn.net/smartfoolish/article/details/122407063?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740211216782429751089%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=167740211216782429751089&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~top_positive~default-1-122407063-null-null.blog_rank_default&utm_term=R3LIVE&spm=1018.2226.3001.4450
 	参考链接2：https://blog.csdn.net/handily_1/article/details/122271243?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740211216782429751089%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=167740211216782429751089&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~top_click~default-3-122271243-null-null.blog_rank_default&utm_term=R3LIVE&spm=1018.2226.3001.4450
 	
+
+2/28
+
+	1、继续编译R3LIVE，解决报错：
 	
+		1）error: conflicting declaration ‘typedef struct LZ4_streamDecode_t LZ4_streamDecode_t’
+		 typedef struct { unsigned long long table[LZ4_STREAMDECODESIZE_U64]; } LZ4_streamDecode_t;
+		 
+		 解决办法：sudo mv /usr/include/flann/ext/lz4.h /usr/include/flann/ext/lz4.h.bak
+				 sudo mv /usr/include/flann/ext/lz4hc.h /usr/include/flann/ext/lz4.h.bak
+
+				 sudo ln -s /usr/include/lz4.h /usr/include/flann/ext/lz4.h
+				 sudo ln -s /usr/include/lz4hc.h /usr/include/flann/ext/lz4hc.h
+
+	参考：https://blog.csdn.net/RuningLING/article/details/119419078
 	
-	
-	
+		2）opencv版本冲突
+		/usr/bin/ld: warning: libopencv_imgproc.so.3.4, needed by /usr/local/lib/libopencv_calib3d.so.3.4.1, may conflict with libopencv_imgproc.so.3.2
+		/usr/bin/ld: warning: libopencv_core.so.3.4, needed by /usr/local/lib/libopencv_calib3d.so.3.4.1, may conflict with libopencv_core.so.3.2
+		/usr/bin/ld: warning: libopencv_imgcodecs.so.3.4, needed by /usr/local/lib/libopencv_highgui.so.3.4.1, may conflict with libopencv_imgcodecs.so.3.2
+
+		解决办法：
+				
+				locate 缺少的lib文件
+
+				locate libopencv_highgui.so.3.4
+
+				进入编译器lib目录
+
+				cd /usr/lib/x86_64-linux-gnu
+
+				建立软链接
+
+				sudo ln -s /home/yzh/opencv-3.4/lib/libopencv_highgui.so.3.4
+				
+			参考：https://blog.csdn.net/Thinkin9/article/details/122413384
+			
+		解完报错后，运行成功！
+		
+		
+
+		
 	
 	
 	
