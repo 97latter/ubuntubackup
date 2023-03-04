@@ -1484,8 +1484,8 @@ int main()
 	检查rplidar的串行端口的权限：
 	ls -l /dev | grep ttyUSB
 
-	添加写权限：（例如/ dev /ttyUSB0）
-	sudo chmod 666 / dev /ttyUSB0
+	添加写权限：（例如/dev/ttyUSB0）
+	sudo chmod 666 /dev/ttyUSB0
 
 	启动一个rplidar节点并在rviz中查看扫描结果。
 	#记得启动之前启动roscore
@@ -1622,6 +1622,9 @@ int main()
 
 参考链接：https://github.com/hku-mars/dyn_small_obs_avoidance
 
+5、配置编译realsense D435i相机
+
+	见 Ji_Lu_tx.txt
 
 	
 	
