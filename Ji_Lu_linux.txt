@@ -1378,12 +1378,12 @@ int main()
 		我们使用opencv来给照片加特效，读取本地视频文件，以及打开摄像头显示视频帧等操作，
 		了解到了opencv的强大之处。当然如果你感兴趣的话可以再去探索一些，实现更多的操作。
 		
-		参考链接：https://blog.csdn.net/qq_45999753/article/details/109316118?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740504716782425661744%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=167740504716782425661744&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-7-109316118-null-null.142^v73^insert_down4,201^v4^add_ask,239^v2^insert_chatgpt&utm_term=opencv3.4.1%E5%AE%89%E8%A3%85&spm=1018.2226.3001.4187
+		参考链接：https://blog.csdn.net/qq_45999753/articl
 		
 		
-	5、R3LIVE编译：
-	cd ~/catkin_ws/src
-	git clone https://github.com/hku-mars/r3live.git
+		
+		
+		     git clone https://github.com/hku-mars/r3live.git
 	cd ../
 	catkin_make
 	source ~/catkin_ws/devel/setup.bash
@@ -1579,11 +1579,48 @@ int main()
 参考链接：https://blog.csdn.net/qq_40695642/article/details/108137300?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167791570216782427488582%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=167791570216782427488582&biz_id=&utm_medium=distribute.pc_search_result.none-task-code-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-108137300-5-null-null.142^v73^insert_down4,201^v4^add_ask,239^v2^insert_chatgpt&utm_term=rplidar%20s1
 	
 	
+4、配置编译dyn_small_obs_avoidance（空中机器人利用机载电脑感知计算躲避动态小障碍物）
 
 
+	1）Build
+	
+	Clone the repository and catkin_make:
+    cd ~/catkin_ws/src
+    git clone https://github.com/hku-mars/dyn_small_obs_avoidance.git
+    cd ..
+    catkin_make
 
+	2）Run demo
+	
+	2.1)Start program
+    source devel/setup.bash
+    roslaunch path_planning demo.launch 
 
+	2.2)Run rosbag or directly fly
+	You can download our demos rosbag from https://drive.google.com/drive/folders/1knQwnrbwunGIvXzOL6wWKkCtOkGE22bG?usp=sharing And play the bag by:
 
+    rosbag play XXX.bag
+
+	2.3)Set target point
+
+    rostopic pub /goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: "camera_init"}, pose: {position: {x: 5.0, y: 0.0, z: 1.0}, orientation: {w: 1.0}}}'
+
+	You can change the target point by setting different value of 'x','y','z' in the above command.
+	
+	3)Run with other equipments
+
+	You can also run this planning program as a module with other point cloud input from other sensors 
+	(like depth camera D435i). But we have not yet test it on depth cameras. 
+	First, change the point cloud topic to your point cloud topic name in path_planning/launch/demo_withNOlidar.launch
+
+    <remap from='/your_pointcloud_topic' to='/cloud_registered'/> 
+
+	Then, start the program:
+
+    source devel/setup.bash
+    roslaunch path_planning demo_withNOlidar.launch 
+
+参考链接：https://github.com/hku-mars/dyn_small_obs_avoidance
 
 
 	
