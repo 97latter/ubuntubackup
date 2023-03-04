@@ -1442,7 +1442,150 @@ int main()
 		
 		
 
-		
+3.4
+
+1、安装Google浏览器
+
+    1）打开终端（Terminal）。
+    输入以下命令来下载谷歌浏览器的安装文件：
+
+	wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+    2）下载完成后，运行以下命令以安装下载的文件：
+	sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+    3）如果提示缺少依赖项，则运行以下命令来安装它们：
+	sudo apt-get install -f
+
+    安装完成后，在应用程序菜单中可以找到并打开谷歌浏览器。
+	
+	、配置激光雷达（rplidar s1 ）
+
+2、配置激光雷达（rplidar s1 ），在Rviz上显示点云图
+
+	1)创建工作空间：
+	mkdir -p ~/catkin_ws/src
+	cd ~/catkin_ws/
+	#如果使用python2直接catkin_make
+	#catkin_make
+	#python3用户
+	#这将会配置 catkin_make 使用 Python 3.你可以在随后的构建中只使用 catkin_make。
+	catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3
+
+
+	2)安装配置rplidar-s1
+
+	在工作空间的src下面下载官网ROS包
+	git clone https://github.com/Slamtec/rplidar_ros.git
+
+	#在~/catkin_ws目录下编译
+	catkin_make
+
+	检查rplidar的串行端口的权限：
+	ls -l /dev | grep ttyUSB
+
+	添加写权限：（例如/ dev /ttyUSB0）
+	sudo chmod 666 / dev /ttyUSB0
+
+	启动一个rplidar节点并在rviz中查看扫描结果。
+	#记得启动之前启动roscore
+	source devel/setup.bash
+	roslaunch rplidar_ros view_rplidar_s1.launch
+	
+3、RPLIDAR在Rviz上渲染显示周围环境
+
+	1）hector_mapping包安装
+	sudo apt-get install ros-melodic-hector-slam
+
+	2）创建launch文件， 在rplidar_ros/launch/目录下添加hector_mapping_demo.launch文件
+	vim（gedit）  hector_mapping_demo.launch
+
+		<launch>
+
+
+	  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+		<!-- Frame names -->
+		<param name="pub_map_odom_transform" value="true"/>
+		<param name="map_frame" value="map" />
+		<param name="base_frame" value="base_link" />
+		<param name="odom_frame" value="base_link" />
+
+
+		<!-- Tf use -->
+		<param name="use_tf_scan_transformation" value="true"/>
+		<param name="use_tf_pose_start_estimate" value="false"/>
+
+
+		<!-- Map size / start point -->
+		<param name="map_resolution" value="0.05"/>
+		<param name="map_size" value="2048"/>
+		<param name="map_start_x" value="0.5"/>
+		<param name="map_start_y" value="0.5" />
+		<param name="laser_z_min_value" value = "-1.0" />
+		<param name="laser_z_max_value" value = "1.0" />
+		<param name="map_multi_res_levels" value="2" />
+
+
+		<param name="map_pub_period" value="2" />
+		<param name="laser_min_dist" value="0.4" />
+		<param name="laser_max_dist" value="5.5" />
+		<param name="output_timing" value="false" />
+		<param name="pub_map_scanmatch_transform" value="true" />
+		<!--<param name="tf_map_scanmatch_transform_frame_name" value="scanmatcher_frame" />-->
+	<!-- Map update parameters -->
+		<param name="update_factor_free" value="0.4"/>
+		<param name="update_factor_occupied" value="0.7" />
+		<param name="map_update_distance_thresh" value="0.2"/>
+		<param name="map_update_angle_thresh" value="0.06" />
+
+
+		<!-- Advertising config -->
+		<param name="advertise_map_service" value="true"/>
+		<param name="scan_subscriber_queue_size" value="5"/>
+		<param name="scan_topic" value="scan"/>
+	  </node>
+
+
+	  <node pkg="rplidar_ros" type="rplidarNode" name="rplidarNode" output="screen">
+		<param name="serial_port"         type="string" value="/dev/ttyUSB0"/>
+		<param name="serial_baudrate"     type="int"    value="265000"/>
+		<param name="frame_id"            type="string" value="laser"/>
+		<param name="inverted"            type="bool"   value="false"/>
+		<param name="angle_compensate"    type="bool"   value="true"/>
+	  </node>
+
+
+	  <node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0 0 0 0 /base_link /laser 100"/>
+	  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hector_slam_launch)/rviz_cfg/mapping_demo.rviz"/>
+
+
+	</launch>
+	
+	（注意：如果使用的激光雷达,不是rplidar_s1,而是rplidar_s2 ,要修改波特率，修改为1000000）
+
+	catkin_make编译完成后记得source
+	source devel/setup.bash 
+
+	3）启动launch文件
+	roslaunch rplidar_ros hector_mapping_demo.launch
+	
+	如果要保存地图的话
+	我们需要使用map_server软件包里的map_saver来保存当前的地图，首先需要保证已经安装了map_server软件包，安装命令如下：
+	sudo apt-get install ros-melodic-map-server
+   
+	当安装好map_server后，接下来就可以使用如下命令来保存地图了，在stdr_gmapping的maps目录下执行命令如下：
+	rosrun map_server map_saver map:=/hector_map -f mymap
+
+参考链接：https://blog.csdn.net/qq_40695642/article/details/108137300?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167791570216782427488582%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=167791570216782427488582&biz_id=&utm_medium=distribute.pc_search_result.none-task-code-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-108137300-5-null-null.142^v73^insert_down4,201^v4^add_ask,239^v2^insert_chatgpt&utm_term=rplidar%20s1
+	
+	
+
+
+
+
+
+
+
 	
 	
 	

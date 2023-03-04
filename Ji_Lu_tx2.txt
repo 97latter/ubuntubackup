@@ -424,10 +424,10 @@ git clone https://github.com/Slamtec/rplidar_ros.git
 catkin_make
 
 检查rplidar的串行端口的权限：
-ls -l / dev | grep ttyUSB
+ls -l /dev | grep ttyUSB
 
-添加写权限：（例如/ dev / ttyUSB0）
-sudo chmod 666 / dev / ttyUSB0
+添加写权限：（例如/ dev /ttyUSB0）
+sudo chmod 666 / dev /ttyUSB0
 
 启动一个rplidar节点并在rviz中查看扫描结果。
 #记得启动之前启动roscore
