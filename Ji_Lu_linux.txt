@@ -1122,7 +1122,9 @@ int main()
 	参考：http://t.csdn.cn/RbfBQl
 
 
-2.20
+-------------------------------------------------------------------------------------------
+
+2/20
 
 
 一、启动ego-planner自己搭建的室外避障环境时报错：
@@ -1141,6 +1143,8 @@ int main()
 		<sim_time>0</sim_time>
 
 参考：http://t.csdn.cn/MfunW
+
+-----------------------------------------------------------------------------------
 
 
 2/26
@@ -1393,6 +1397,7 @@ int main()
 	参考链接1：https://blog.csdn.net/smartfoolish/article/details/122407063?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740211216782429751089%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=167740211216782429751089&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~top_positive~default-1-122407063-null-null.blog_rank_default&utm_term=R3LIVE&spm=1018.2226.3001.4450
 	参考链接2：https://blog.csdn.net/handily_1/article/details/122271243?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167740211216782429751089%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=167740211216782429751089&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~top_click~default-3-122271243-null-null.blog_rank_default&utm_term=R3LIVE&spm=1018.2226.3001.4450
 	
+------------------------------------------------------------------------------------------
 
 2/28
 
@@ -1431,18 +1436,18 @@ int main()
 			参考：https://blog.csdn.net/Thinkin9/article/details/122413384
 			
 		解完报错后，运行成功！
-		
+
+--------------------------------------------------------------------------------------------------
 		
 3/1
 
 
 	1、运行r3live运行过程中一直卡顿，生成的pcd点云文件会存在覆盖；
 	
-	2、
 		
-		
+---------------------------------------------------------------------------------------------------------		
 
-3.4
+3/4
 
 1、安装Google浏览器
 
@@ -1630,7 +1635,9 @@ ROS——RPLiDAR：http://wiki.ros.org/rplidar
 
 参考：	https://blog.csdn.net/YOULANSHENGMENG/article/details/125334427?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167792882216782427449507%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=167792882216782427449507&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-125334427-null-null.142^v73^insert_down4,201^v4^add_ask,239^v2^insert_chatgpt&utm_term=realsense%20d435i&spm=1018.2226.3001.4187
 	
-3.5
+------------------------------------------------------------------------------------	
+	
+3/5
 
 1、关于激光雷达显示的信息：
 
@@ -1654,11 +1661,32 @@ rplidar SDK: https://github.com/Slamtec/rplidar_sdk
 
 rplidar Tutorial:  https://github.com/robopeak/rplidar_ros/wiki
 	
+-----------------------------------------------------------------------------------------	
 	
+3/6
+
+1、编译ros包时报错
+
+	输入：catkin_make clean
 	
-	
-	
-	
+	编译结束后出现：
+	CMake Error at /opt/ros/melodic/share/catkin/cmake/catkin_workspace.cmake:100 (message):
+	  This workspace contains non-catkin packages in it, and catkin cannot build
+	  a non-homogeneous workspace without isolation.  Try the
+	  'catkin_make_isolated' command instead.
+	Call Stack (most recent call first):
+	  CMakeLists.txt:69 (catkin_workspace)
+
+		 This workspace contains non-catkin packages in it, and catkin cannot build
+		  a non-homogeneous workspace without isolation.  
+
+	 解决办法：
+	 	
+		打开CMakeLists.txt文件发现69行有一个catkin_workspace，将其注释掉，再次编译。
+		
+		
+
+2、
 	
 
 
