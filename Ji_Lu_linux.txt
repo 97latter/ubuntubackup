@@ -1683,12 +1683,18 @@ rplidar Tutorial:  https://github.com/robopeak/rplidar_ros/wiki
 	 解决办法：
 	 	
 		打开CMakeLists.txt文件发现69行有一个catkin_workspace，将其注释掉，再次编译。
-		
-		
-
-2、
 	
+	
+-------------------------------------------------------------
 
+3/9
+
+
+1、无人机仿真时，启动键盘控制后，通讯连接报错；
+	
+2、多旋翼无人机仿真
+
+https://blog.csdn.net/qq_37680545/article/details/123213054
 
 
 
