@@ -1722,14 +1722,77 @@ Ego-planner会在每次更新时考虑无人机周围的实时信息，如障碍
 
 1、编译程序时，使用catkin_make ，无法编译，但是没报错；
 
+	暂时使用catkin  build 进行编译
 
 
 
+2、使用catkin build 编译时报错：
 
 
+error: no match for ‘operator=’ (operand types are ‘Eigen::internal::enable_if<true, Eigen::IndexedView<Eigen::Matrix<double, -1, -1>, double, double> >::type {aka Eigen::IndexedView<Eigen::Matrix<double, -1, -1>, double, double>}’ and ‘double’)
+               i * (i - 1) * (i - 2) * j * (j - 1) * (j - 2) * pow(ts, i + j - 5) / (i + j - 5);
 
-
+解决方法：将报错文件中出现的两个‘double’改为‘int’
+ for (int i = 3; i < order; i += 1)
+        for (int j = 3; j < order; j += 1)
+        {
+          mat_jerk(i, j) =
+              i * (i - 1) * (i - 2) * j * (j - 1) * (j - 2) * pow(ts, i + j - 5) / (i + j - 5);
+        }
 		
+
+3、catkin  build编译继续报错：
+
+Errors     << odom_visualization:make /home/xcs/catkin_ws/logs/odom_visualization/build.make.001.log                                                                                                       
+/usr/bin/ld: 找不到 -lpose_utils
+collect2: error: ld returned 1 exit status
+
+解决办法：
+
+locate libpose_utils.so位置后
+
+将两个位置链接起来
+
+sudo ln -s  /locate找到位置/libpose_utils.so     /usr/lib/libpose_utils.so
+
+
+3、catkin build 报错：
+
+
+multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
+
+解决方法：
+
+		出现编译失败问题后，输入：
+
+		sudo apt-get install ros-melodic-multi-map-server
+		sudo apt-get update
+		sudo apt-get upgrade
+
+		如果失败了，下载下面的链接：
+链接：https://pan.baidu.com/s/1gw6ytOEUZeEbxhkOwsnL_g
+提取码：jm8s
+把这四个文件放在/devel/include/multi_map_server/下
+或放在/src/uav_simulator/Utils/multi_map_server/include/multi_map_server/下
+————————————————
+版权声明：本文为CSDN博主「梅西与老詹」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_42869979/article/details/120460405
+
+
+----------------------------------------------------
+
+3.23
+
+1、添加端口权限：
+
+将无人机飞控和Realsense相机插在笔记本左侧的两个端口上，分别添加权限：
+
+sudo chmod 777 /dev/ttyACM0  (左下边第二个USB3.0 口)
+
+sudo chmod 777 /dev/tty0
+
+
+
 
 		
 		
