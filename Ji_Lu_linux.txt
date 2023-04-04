@@ -1779,17 +1779,48 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 原文链接：https://blog.csdn.net/qq_42869979/article/details/120460405
 
 
-----------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 
-3.23
+4.4
 
-1、添加端口权限：
+1、使用激光雷达SLAM时，运行没有报错，但是键盘启动没反应，
 
-将无人机飞控和Realsense相机插在笔记本左侧的两个端口上，分别添加权限：
+	[ WARN] [1680576455.457933039, 215.192000000]: CMD: Unexpected command 176, result 0
+	WARN  [mc_pos_control] Offboard activation failed with error: Activation Failed
+	WARN  [mc_pos_control] Position-Ctrl activation failed with error: Activation Failed
+	WARN  [mc_pos_control] Altitude-Ctrl activation failed with error: Activation Failed
+	
+	原因：之前根据教程把ekf设置改为视觉定位，没有视觉信息输入的时候，未改回GPS定位
+	
+	解决办法：改回GPS定位
+	
+	
+		1）1.11版本可以直接修改rcS文件
+		gedit ~/PX4_Firmware/ROMFS/px4fmu_common/init.d-posix/rcS
+		
+		2）修改参数
+		通过注释来修改不同的参数
+		
+			# GPS used
+			#param set EKF2_AID_MASK 1
+			# Vision used and GPS denied
+			param set EKF2_AID_MASK 24
 
-sudo chmod 777 /dev/ttyACM0  (左下边第二个USB3.0 口)
+			# Barometer used for hight measurement
+			#param set EKF2_HGT_MODE 0
+			# Barometer denied and vision used for hight measurement
+			param set EKF2_HGT_MODE 3
+		
+		
+		3）删除原参数配置文件
+		重启仿真前，需要删除上一次记录在虚拟eeprom中的参数文件，否则仿真程序会读取该参数文件，导致本次rcS的修改不能生效
+		
+		rm ~/.ros/eeprom/parameters*
+		rm -rf ~/.ros/sitl*
+		
+		
+	参考：https://gitee.com/robin_shaun/XTDrone/issues/I5I1N9
 
-sudo chmod 777 /dev/tty0
 
 
 
