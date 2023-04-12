@@ -286,6 +286,7 @@ sudo apt-get install ros-melodic-plotjuggler-ros
 
 7. 安装net-tools查看ip（貌似之前装过了）
 
+
 sudo apt install net-tools 
 
 查看ip：
