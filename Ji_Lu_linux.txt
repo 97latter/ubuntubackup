@@ -1846,6 +1846,34 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 	最后通过指令安装
 
 	
+----------------------------------------------------------------------------
+
+4.23
+
+1、gazebo报错
+
+	[Err] [InsertModelWidget.cc:426] Missing model.config for model "/home/xcs/PX4_Firmware/Tools/sitl_gazebo/models/livox_mid40"
+
+解决办法：(问题出现在目录.gazebo/model/gui.ini文件)
+
+	将原始的.gazebo/model/gui.ini内容中的felenames地址，改为：
+
+	/home/xcs/.gazebo/models
+
+	先export GAZEBO_MASTER_URI=http://localhost:端口号
+
+	gzclient 启动
+
+	（方法无效）
+
+	***新认识***
+	这个不影响使用的。如果觉得难受就从其他config文件复制修改一个过来，不影响使用的 。
+参考：https://bbs.amovlab.com/forum.php?mod=viewthread&tid=27369
+
+
+
+
+
 
 	
 
