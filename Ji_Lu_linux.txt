@@ -1871,8 +1871,45 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 参考：https://bbs.amovlab.com/forum.php?mod=viewthread&tid=27369
 
 
+3、编译ORB-SLAM2报错：
+
+	CMake Error at CMakeLists.txt:40 (find_package):
+  By not providing "FindPangolin.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "Pangolin",
+  but CMake did not find one.
+
+  Could not find a package configuration file provided by "Pangolin" with any
+  of the following names:
+
+    PangolinConfig.cmake
+    pangolin-config.cmake
 
 
+	解决办法：pangolin的库版本升级导致的结果，我们需要的0.5
+
+	git clone https://github.com/stevenlovegrove/Pangolin.git
+	cd Pangolin
+	git checkout 7987c9b        #回退到v0.5版本
+	mkdir build 
+	cd build
+	cmake ..
+	make -j64
+	sudo make install
+
+	还要在Cmakelist.txt里面加上这个，其中上面set是你安装Pangolin的位置
+	set(Pangolin_DIR /home/xcs/Pangolin/build/src)
+	find_package(Pangolin REQUIRED)
+
+参考链接：https://blog.csdn.net/weixin_40749043/article/details/128260141?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168223953816800188523037%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=168223953816800188523037&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-128260141-null-null.142^v86^insert_down28,239^v2^insert_chatgpt&utm_term=%20%20PangolinConfig.cmake%20%20%20%20%20pangolin-config.cmake&spm=1018.2226.3001.4187
+
+
+4、运行sh脚本时报错，不妨试一试catkin_make编译(而不是catkin build)
+
+
+
+	
+
+	
 
 
 	
