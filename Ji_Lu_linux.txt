@@ -1925,6 +1925,9 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 2、运行demo.launch时，在rviz执行任意命令程序报错，运行中断
 
 	（暂时未解决）
+	看了一眼源代码(/home/xcs/catkin_lianxi/src/grid_path_searcher/src/Astar_searcher.cpp)，没有写完整，需要自己补充
+
+	
 	
 3、ubuntu18.04安装可以解压“.7z”压缩文件的工具：
 
@@ -1941,6 +1944,11 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 	sudo apt install calibre
 
 参考链接：https://blog.csdn.net/weixin_30727835/article/details/98106622?ops_request_misc=&request_id=&biz_id=102&utm_term=ubuntu18.04%E5%AE%89%E8%A3%85epub%E9%98%85%E8%AF%BB%E5%99%A8&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-0-98106622.blog_rank_default&spm=1018.2226.3001.4450
+
+5、
+
+
+	
 
 
 
