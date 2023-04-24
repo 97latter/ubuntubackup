@@ -1903,8 +1903,26 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 参考链接：https://blog.csdn.net/weixin_40749043/article/details/128260141?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168223953816800188523037%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=168223953816800188523037&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-128260141-null-null.142^v86^insert_down28,239^v2^insert_chatgpt&utm_term=%20%20PangolinConfig.cmake%20%20%20%20%20pangolin-config.cmake&spm=1018.2226.3001.4187
 
 
-4、运行sh脚本时报错，不妨试一试catkin_make编译(而不是catkin build)
+4、运行sh脚本时报错，不妨试一试catkin_make重新编译(而不是catkin build)
 
+
+
+--------------------------------------------------------------------------
+
+
+4.24
+
+1、路径规划课程实验二启动rviz报错
+
+	[ERROR] [1682301823.642463627]: PluginlibFactory: The plugin for class 'rviz_plugins/Goal3DTool' failed to load.  Error: According to the loaded plugin descriptions the class rviz_plugins/Goal3DTool with base class type rviz::Tool does not exist. Declared types are  rviz/FocusCamera rviz/Interact rviz/Measure rviz/MoveCamera rviz/PublishPoint rviz/Select rviz/SetGoal rviz/SetInitialPose rviz_plugin_tutorials/PlantFlag
+
+	解决方法： 将rviz demo中的Fixed Frame中的world改成//world  （猜测是转义问题 加 // 解决）
+		（路径catkin_ws/src/grid_path_searcher/launch/rviz_config/demo.rviz）
+
+参考链接：https://blog.csdn.net/weixin_38478542/article/details/126615247?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168230193516800188585623%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=168230193516800188585623&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-2-126615247-null-null.blog_rank_default&utm_term=The%20class%20required%20for%20this%20tool%2C%20rviz_plugins%2FGoal3DTool%2C%20could%20not%20be%20loaded&spm=1018.2226.3001.4450
+
+
+2、运行demo.launch时，在rviz执行任意命令程序报错，运行中断
 
 
 	
