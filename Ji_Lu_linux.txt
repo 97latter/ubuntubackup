@@ -1924,9 +1924,27 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 
 2、运行demo.launch时，在rviz执行任意命令程序报错，运行中断
 
+	（暂时未解决）
+	
+3、ubuntu18.04安装可以解压“.7z”压缩文件的工具：
 
 	
 
+    sudo apt-get install p7zip-full
+
+
+参考链接：https://blog.csdn.net/RayChiu757374816/article/details/126287701?ops_request_misc=&request_id=&biz_id=102&utm_term=ubuntu18.04%E6%89%93%E5%BC%807z%E6%96%87%E4%BB%B6&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-0-126287701.blog_rank_default&spm=1018.2226.3001.4450
+
+
+4、ubutnu18.04安装equp格式文件的电子书阅读器
+	
+	sudo apt install calibre
+
+参考链接：https://blog.csdn.net/weixin_30727835/article/details/98106622?ops_request_misc=&request_id=&biz_id=102&utm_term=ubuntu18.04%E5%AE%89%E8%A3%85epub%E9%98%85%E8%AF%BB%E5%99%A8&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-0-98106622.blog_rank_default&spm=1018.2226.3001.4450
+
+
+
+	
 	
 
 
