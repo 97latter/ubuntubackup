@@ -1945,7 +1945,13 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 
 参考链接：https://blog.csdn.net/weixin_30727835/article/details/98106622?ops_request_misc=&request_id=&biz_id=102&utm_term=ubuntu18.04%E5%AE%89%E8%A3%85epub%E9%98%85%E8%AF%BB%E5%99%A8&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-0-98106622.blog_rank_default&spm=1018.2226.3001.4450
 
-5、
+------------------------------------------------------------------------------------
+
+4.25
+
+1、从B站上看到VINS-Courc的代码，打算在ubuntu上跑一跑，根据github下载的链接，报错一大堆，暂时未解决！！！
+
+
 
 
 	
