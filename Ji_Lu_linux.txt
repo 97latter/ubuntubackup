@@ -1952,9 +1952,23 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 1、从B站上看到VINS-Courc的代码，打算在ubuntu上跑一跑，根据github下载的链接，报错一大堆，暂时未解决！！！
 
 
+2、ubuntu18.04安装clion
 
+	 sudo snap install clion --classic
 
 	
+参考链接：https://blog.csdn.net/ChuiGeDaQiQiu/article/details/114324796?ops_request_misc=&request_id=&biz_id=102&utm_term=ubuntu18.04%E5%AE%89%E8%A3%85clion&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-6-114324796.142^v86^insert_down28,239^v2^insert_chatgpt&spm=1018.2226.3001.4450
+
+3、修改clion字体大小（鼠标滑轮+ctrl 任意控制字体大小）
+
+	file---settings---keymap
+
+	搜索位置输入：font
+
+	找到Decrease Font Size和Increase Font Size，然后右键选择add mouse shotcut,
+	分别设置成ctrl+向上滚动滑轮，和ctrl+向下滚动滑轮，这样以后就可以直接按住ctrl然后滚动鼠标滑轮调节字体大小了。
+
+参考链接：https://blog.csdn.net/u013171226/article/details/107901161?ops_request_misc=&request_id=&biz_id=102&utm_term=clion%E4%BF%AE%E6%94%B9%E5%AD%97%E4%BD%93%E5%A4%A7%E5%B0%8F&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-1-107901161.blog_rank_default&spm=1018.2226.3001.4450
 
 
 
