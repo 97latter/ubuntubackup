@@ -2010,6 +2010,40 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 参考链接：CSAPP:Lab0 -Docker搭建纯净Linux环境 - 周小伦的文章 - 知乎 https://zhuanlan.zhihu.com/p/340283308
 
 
+------------------------------------------------------
+
+5.9
+
+1、ubuntu18.04 安装 pycharn
+
+	快捷安装方式失败
+
+	下载安装包，解压后进入安装目录的bin，执行 sh ./pycharm.sh 即可打开直接编译
+	
+	将pycharm添加到快捷方式
+
+	cd /usr/share/applications/
+
+	sudo gedit pycharm.desktop
+	
+	将以下内容复制进去：
+	
+	[Desktop Entry]
+	Version=1.0
+	Type=Application
+	Name=Pycharm
+	Icon=/home/xcs/Downloads/pycharm-community-2023.1.1/bin/pycharm.png
+	Exec=sh /home/xcs/Downloads/pycharm-community-2023.1.1/bin/pycharm.sh
+	MimeType=application/x-py;
+	Name[en_US]=pycharm
+
+	保存即可在任务栏找到对应程序运行图标
+
+	
+
+	
+
+
 	
 	
 
