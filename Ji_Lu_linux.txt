@@ -2039,6 +2039,24 @@ multi_map_server/MultiOccupancyGrid.h:没有那个文件或目录
 
 	保存即可在任务栏找到对应程序运行图标
 
+参考链接：https://blog.csdn.net/qq_15192373/article/details/81091278
+
+------------------------------------------------------------------------
+
+5.10
+
+1、任意修改pycharm字体大小
+
+	File--Setting--Keymap
+	
+	搜索框分别搜索 increase  和 decrease
+
+	修改Increase/Decrease Font Size
+
+参考链接：https://blog.csdn.net/yzb564/article/details/127079642?ops_request_misc=&request_id=&biz_id=102&utm_term=pycharm%E4%BF%AE%E6%94%B9%E5%AD%97%E4%BD%93%E5%A4%A7%E5%B0%8F&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-0-127079642.blog_rank_default&spm=1018.2226.3001.4450
+
+
+
 	
 
 	
